@@ -56,3 +56,10 @@ dkms.conf
 
 .vscode
 main
+
+# OSX
+.DS_Store
+
+# data
+forest/data
+hugo-mega-edition/data/
