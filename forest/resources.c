@@ -177,13 +177,15 @@ void init_textures(const char* data_dir) {
     char sync_path[512];
 
     // Fixed assets already in native format
-    textures.instruction_screen = load_texture("../game/resources/images/instruction_Forest.png");
-    textures.bg_gradient        = load_texture("../game/resources/fixed_assets/gradient.bmp");
+    snprintf(path, sizeof(path), "%s/resources/images/instruction_Forest.png", data_dir);
+    textures.instruction_screen = load_texture(path);
+    snprintf(path, sizeof(path), "%s/resources/fixed_assets/gradient.bmp", data_dir);
+    textures.bg_gradient        = load_texture(path);
 
     // Arrow buttons — stored as pre-exported PNGs (arrows.cgf_0.png … _3.png)
     for (int i = 0; i < 4; i++) {
         snprintf(path, sizeof(path),
-                 "../game/resources/fixed_assets/arrows.cgf_%d.png", i);
+                 "%s/resources/fixed_assets/arrows.cgf_%d.png", data_dir, i);
         textures.arrows[i] = load_texture(path);
     }
 

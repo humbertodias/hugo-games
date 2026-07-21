@@ -30,13 +30,13 @@ void render_instructions() {
 // Main game loop
 void game_loop() {
     bool quit = false;
-        
+
     // Initialize
     current_state = STATE_INSTRUCTIONS;
     reset_state(&state_metadata);
     srand(time(NULL));
     InputState input_state = {0};
-    
+
     while (!quit && current_state != STATE_END) {
         // Handle events
 
@@ -53,10 +53,10 @@ void game_loop() {
         } else if(current_state == STATE_CAVE){
             new_state = process_cave(input_state);
         }
-        
+
         if(new_state != STATE_NONE) {
             printf("State transition: %d -> %d\n", current_state, new_state);
-            
+
             // Pass forest score to cave when transitioning
             if (current_state == STATE_FOREST && new_state == STATE_CAVE) {
                 int forest_score = get_forest_score();
@@ -82,30 +82,27 @@ void game_loop() {
         }
         render_step();
     }
-    
+
     printf("Game ended\n");
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        printf("Usage: %s <decompressed_data_directory>\n", argv[0]);
-        return 1;
-    }
-    
     printf("Hugo Lite - Single Player Forest Game\n");
     printf("Based on the Hugo TV game from the 90s\n");
     printf("Controls: Press 2/UP to JUMP, 8/DOWN to DUCK, 5 to START, ESC to quit\n\n");
-    
-    const char *data_dir = argv[1];
+
+    const char *data_dir = (argc >= 2) ? argv[1] : "data";
+
     if (!render_init()) {
         printf("Failed to initialize renderer!\n");
         return 1;
     }
+
     init_textures(data_dir);
     init_audio(data_dir);
-    
+
     game_loop();
     render_cleanup();
-    
+
     return 0;
 }
