@@ -13,7 +13,7 @@ typedef struct {
 Texture* animation_get_sync_frame(Animation animation, int frame_index);
 Texture* animation_get_frame(Animation animation, int frame_index);
 
-void init_textures(const char *data_dir);
-void init_audio(const char *data_dir);
+void init_textures(void);
+void init_audio(void);
 
 #endif

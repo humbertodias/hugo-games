@@ -163,6 +163,9 @@ typedef struct {
 extern GameTextures textures;
 extern GameAudio audio;
 
+extern const char *data_dir;
+char *datapath(const char *rel);
+
 typedef enum {
     STATE_NONE,
     STATE_INSTRUCTIONS,

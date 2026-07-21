@@ -13,8 +13,16 @@
 
 GameTextures textures;
 GameAudio audio;
+const char *data_dir = "data";
+static char datapath_buf[1024];
 static GameState current_state;
 static StateMetadata state_metadata;
+
+char *datapath(const char *rel)
+{
+    snprintf(datapath_buf, sizeof(datapath_buf), "%s/%s", data_dir, rel);
+    return datapath_buf;
+}
 
 GameState process_instructions(InputState state) {
     if (state.key_start || get_state_time(&state_metadata) > 3) {
@@ -91,15 +99,15 @@ int main(int argc, char* argv[]) {
     printf("Based on the Hugo TV game from the 90s\n");
     printf("Controls: Press 2/UP to JUMP, 8/DOWN to DUCK, 5 to START, ESC to quit\n\n");
 
-    const char *data_dir = (argc >= 2) ? argv[1] : "data";
+    data_dir = (argc >= 2) ? argv[1] : "data";
 
     if (!render_init()) {
         printf("Failed to initialize renderer!\n");
         return 1;
     }
 
-    init_textures(data_dir);
-    init_audio(data_dir);
+    init_textures();
+    init_audio();
 
     game_loop();
     render_cleanup();
