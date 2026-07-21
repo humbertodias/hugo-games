@@ -1,21 +1,21 @@
 #all:
-#	gcc hugomain.c -Wall -lSDL2 -o hugomain
+#	gcc main.c -Wall -lSDL2 -o main
 #debug:
-#	gcc hugomain.c -Wall -lSDL2 -g -o hugomain
+#	gcc main.c -Wall -lSDL2 -g -o main
 #mingw:
-#	gcc hugomain.c -w -Wl,-subsystem,windows -lmingw32 -lSDL2main -lSDL2 -o hugomain.exe -Wall
+#	gcc main.c -w -Wl,-subsystem,windows -lmingw32 -lSDL2main -lSDL2 -o main.exe -Wall
 #laby:
 #	gcc testlaby.c -Wall -lSDL2 -g -o testlaby
 
-CXX_FLAGS := -std=c++17 -Wall $(shell pkg-config --cflags sdl2)
+CC_FLAGS := -Wall $(shell pkg-config --cflags sdl2)
 LD_FLAGS := $(shell pkg-config --libs sdl2)
-CXX := g++
+CC := gcc
 
 all:
-	$(CXX) hugomain.c -o hugomain $(CXX_FLAGS) $(LD_FLAGS)
+	$(CC) main.c -o main $(CC_FLAGS) $(LD_FLAGS)
 debug:
-	$(CXX) hugomain.c -o hugomain $(CXX_FLAGS) $(LD_FLAGS) -g
+	$(CC) main.c -o main $(CC_FLAGS) $(LD_FLAGS) -g
 
 clean:
 	find . -name "*.o" -delete
-	rm -f hugomain
+	rm -f main

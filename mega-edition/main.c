@@ -10,6 +10,15 @@ typedef struct OPTHUGO
 } mainopt;
 mainopt options;
 
+const char *data_dir = "data";
+static char datapath_buf[1024];
+
+char *datapath(const char *rel)
+{
+  snprintf(datapath_buf, sizeof(datapath_buf), "%s/%s", data_dir, rel);
+  return datapath_buf;
+}
+
 #include "mysufcfunc.h"
 #include "formats/lzp.h"
 #include "formats/raw.h"
@@ -23,6 +32,8 @@ const int SCREEN_HEIGHT = 480;
 
 int main (int argc, char **args)
 {
+  data_dir = (argc >= 2) ? args[1] : "data";
+
   SDL_Window* window = NULL;
   Uint32 status;
   options.display = 0;

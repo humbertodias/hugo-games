@@ -13,15 +13,15 @@ int StartGame(SDL_Window *window)
   SDL_AudioDeviceID wavdev;
   Uint32 wavlen;
   Uint8 *wavbuf;
-  itemedia = LoadLZP("./data/IntroData/ite-media.lzp");
+  itemedia = LoadLZP(datapath("IntroData/ite-media.lzp"));
   if (itemedia.fp==NULL)
   {
-    printf("(Intro Error)File not found: ./data/IntroData/ite-media.lzp\n");
+    printf("(Intro Error)File not found: %s\n", datapath("IntroData/ite-media.lzp"));
     return 1;
   }
-  if (SDL_LoadWAV("./data/IntroData/ite-media.wav",&wavspec,&wavbuf,&wavlen) == NULL)
+  if (SDL_LoadWAV(datapath("IntroData/ite-media.wav"),&wavspec,&wavbuf,&wavlen) == NULL)
   {
-    printf("(Intro Error)File not found: ./data/IntroData/ite-media.wav\n");
+    printf("(Intro Error)File not found: %s\n", datapath("IntroData/ite-media.wav"));
     UnloadLZP(itemedia);
     return 1;
   }
@@ -58,10 +58,10 @@ int StartGame(SDL_Window *window)
      return 1;
   }
   st = 0;
-  intro2 = LoadRAW("./data/IntroData/INTRO.RAW");
+  intro2 = LoadRAW(datapath("IntroData/INTRO.RAW"));
   if (intro2.fp == NULL)
   {
-    printf("(Intro Error)File not found: ./data/IntroData/INTRO.RAW\n");
+    printf("(Intro Error)File not found: %s\n", datapath("IntroData/INTRO.RAW"));
     return 1;
   }
   for (i = 256; (i!=0) && (!st); i = i/2)

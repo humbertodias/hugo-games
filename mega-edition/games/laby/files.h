@@ -18,69 +18,69 @@ Uint8 *labyrun2buf;
 
 Uint32 LabyOpenFiles()
 {
-  labyintropic = LoadRAW("./data/LabyrinthData/gfx/INTROPIC.RAW");
+  labyintropic = LoadRAW(datapath("LabyrinthData/gfx/INTROPIC.RAW"));
   if (labyintropic.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/INTROPIC.RAW\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/INTROPIC.RAW"));
     return 1;
   }
-  labyhugosync = LoadCGF("./data/LabyrinthData/gfx/Hugosync.cgf");
+  labyhugosync = LoadCGF(datapath("LabyrinthData/gfx/Hugosync.cgf"));
   if (labyhugosync.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/Hugosync.cgf\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/Hugosync.cgf"));
     return 1;
   }
-  laby01sync = LoadOOS("./data/LabyrinthData/Sync/001-01.oos");
+  laby01sync = LoadOOS(datapath("LabyrinthData/Sync/001-01.oos"));
   if (laby01sync.buf == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/Sync/001-01.oos\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/Sync/001-01.oos"));
     return 1;
   }
-  if (SDL_LoadWAV("./data/LabyrinthData/Sfx/001-01.wav",&laby01spec,&laby01buf,&laby01len) == NULL)
+  if (SDL_LoadWAV(datapath("LabyrinthData/Sfx/001-01.wav"),&laby01spec,&laby01buf,&laby01len) == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/Sfx/001-01.wav\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/Sfx/001-01.wav"));
     return 1;
   }
   laby01dev = SDL_OpenAudioDevice(NULL,0,&laby01spec,NULL,0);
-  labybaggr1 = LoadTIL("./data/LabyrinthData/gfx/Baggrund_m.Sand4.til");
+  labybaggr1 = LoadTIL(datapath("LabyrinthData/gfx/Baggrund_m.Sand4.til"));
   if (labybaggr1.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/Baggrund_m.Sand4.til\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/Baggrund_m.Sand4.til"));
     return 1;
   }
-  labybaggr2 = LoadTIL("./data/LabyrinthData/gfx/Baggrund_m.Sand&Skinner.til");
+  labybaggr2 = LoadTIL(datapath("LabyrinthData/gfx/Baggrund_m.Sand&Skinner.til"));
   if (labybaggr2.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/Baggrund_m.Sand&Skinner.til\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/Baggrund_m.Sand&Skinner.til"));
     return 1;
   }
-  labyhugowalksright = LoadCGF("./data/LabyrinthData/gfx/HugoWalksRight2.cgf");
+  labyhugowalksright = LoadCGF(datapath("LabyrinthData/gfx/HugoWalksRight2.cgf"));
   if (labyhugowalksright.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/HugoWalksRight2.cgf\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/HugoWalksRight2.cgf"));
     return 1;
   }
-  labyhugowalksleft = LoadCGF("./data/LabyrinthData/gfx/HugoWalksLeft2.cgf");
+  labyhugowalksleft = LoadCGF(datapath("LabyrinthData/gfx/HugoWalksLeft2.cgf"));
   if (labyhugowalksleft.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/HugoWalksLeft2.cgf\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/HugoWalksLeft2.cgf"));
     return 1;
   }
-  labyhugojumpsright = LoadCGF("./data/LabyrinthData/gfx/HugoJumpsRight.cgf");
+  labyhugojumpsright = LoadCGF(datapath("LabyrinthData/gfx/HugoJumpsRight.cgf"));
   if (labyhugojumpsright.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/HugoJumpsRight.cgf\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/HugoJumpsRight.cgf"));
     return 1;
   }
-  labyhugojumpsleft = LoadCGF("./data/LabyrinthData/gfx/HugoJumpsLeft.cgf");
+  labyhugojumpsleft = LoadCGF(datapath("LabyrinthData/gfx/HugoJumpsLeft.cgf"));
   if (labyhugojumpsleft.fp == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/gfx/HugoJumpsLeft.cgf\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/gfx/HugoJumpsLeft.cgf"));
     return 1;
   }
-  if (SDL_LoadWAV("./data/LabyrinthData/Sfx/Run2-lp.wav",&labyrun2spec,&labyrun2buf,&labyrun2len) == NULL)
+  if (SDL_LoadWAV(datapath("LabyrinthData/Sfx/Run2-lp.wav"),&labyrun2spec,&labyrun2buf,&labyrun2len) == NULL)
   {
-    printf("(Labyrinth Error)File not found: ./data/LabyrinthData/Sfx/Run2-lp.wav\n");
+    printf("(Labyrinth Error)File not found: %s\n", datapath("LabyrinthData/Sfx/Run2-lp.wav"));
     return 1;
   }
   labyrun2dev = SDL_OpenAudioDevice(NULL,0,&labyrun2spec,NULL,0);
