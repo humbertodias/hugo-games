@@ -11,6 +11,13 @@ int query_texture_width(Texture *texture) {
     return w;
 }
 
+int query_texture_height(Texture *texture) {
+    int w = 0;
+    int h = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+    return h;
+}
+
 int get_time_ms() {
     return SDL_GetTicks();
 }
@@ -83,6 +90,22 @@ void render_subtexture(Texture* texture, int sx, int sy, int w, int h, int dx, i
 
         SDL_RenderCopy(renderer, texture, &src_rect, &dest_rect);
     }
+}
+
+void render_rect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+    if (!renderer || w <= 0 || h <= 0) return;
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_Rect rect = { x, y, w, h };
+    SDL_RenderFillRect(renderer, &rect);
+}
+
+void render_rect_outline(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+    if (!renderer || w <= 0 || h <= 0) return;
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_Rect rect = { x, y, w, h };
+    SDL_RenderDrawRect(renderer, &rect);
 }
 
 void play(Audio *audio){
@@ -162,6 +185,7 @@ void render_step() {
 }
 
 bool render_getevents(InputState* input_state) {
+    input_state->debug_toggle = false;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -169,6 +193,8 @@ bool render_getevents(InputState* input_state) {
         } else if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.sym == SDLK_ESCAPE) {
                 return true;
+            } else if (event.key.keysym.sym == SDLK_F1) {
+                input_state->debug_toggle = true;
             } else if (event.key.keysym.sym == SDLK_3) {
                 input_state->cave_rope_1_pressed = true;
             } else if (event.key.keysym.sym == SDLK_6) {

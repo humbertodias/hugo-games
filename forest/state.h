@@ -20,6 +20,7 @@ typedef struct {
     bool key_up;
     bool key_down;
     bool key_start;
+    bool debug_toggle;
     bool cave_rope_1_pressed;
     bool cave_rope_2_pressed;
     bool cave_rope_3_pressed;

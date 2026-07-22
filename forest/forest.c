@@ -66,6 +66,7 @@ typedef struct {
 static ForestContext game_ctx = {0};
 static ForestState current_forest_state = STATE_FOREST_WAIT_INTRO;
 static StateMetadata state_metadata;
+static bool debug_show_collisions = false;
 
 #define FOREST_BG_SPEED_MULTIPLIER 1.0
 
@@ -350,6 +351,149 @@ void render_controls() {
     }
 }
 
+static void hugo_debug_bounds(int *out_x, int *out_y, int *out_w, int *out_h) {
+    int hugo_x = HUGO_X_POS;
+    double now = get_game_time();
+    Texture *t = NULL;
+    int y = 90;
+
+    if (game_ctx.arrow_up_focus && game_ctx.hugo_jumping_time >= 0) {
+        double dt = (now - game_ctx.hugo_jumping_time) / 0.75;
+        double dy = -250 * dt * dt + 250 * dt - 22.5;
+        y = (int)(40 - dy);
+        t = textures.hugo_jump[0];
+    } else if (game_ctx.arrow_down_focus && game_ctx.hugo_crawling_time >= 0) {
+        y = 105;
+        t = textures.hugo_crawl[0];
+    } else {
+        y = 90;
+        t = textures.hugo_side[0];
+    }
+
+    int w = t ? query_texture_width(t) : 32;
+    int h = t ? query_texture_height(t) : 48;
+    *out_x = hugo_x;
+    *out_y = y;
+    *out_w = w;
+    *out_h = h;
+}
+
+void render_collision_debug() {
+    if (!debug_show_collisions) return;
+
+    double fract = game_ctx.parallax_pos - floor(game_ctx.parallax_pos);
+    int check_idx = (int)floor(game_ctx.parallax_pos) + 1;
+    if (check_idx >= FOREST_MAX_TIME) check_idx = FOREST_MAX_TIME - 1;
+
+    // Collision trigger column (where checks fire relative to scrolling obstacles)
+    int trigger_x = (int)((check_idx - game_ctx.parallax_pos) * FOREST_GROUND_SPEED);
+    render_rect(trigger_x - 1, 0, 3, SCREEN_HEIGHT, 255, 255, 0, 90);
+    render_rect_outline(trigger_x - 2, 0, 5, SCREEN_HEIGHT, 255, 255, 0, 220);
+
+    // Hugo hitbox
+    int hx, hy, hw, hh;
+    hugo_debug_bounds(&hx, &hy, &hw, &hh);
+    bool hugo_safe_jump = game_ctx.arrow_up_focus;
+    bool hugo_safe_duck = game_ctx.arrow_down_focus;
+    render_rect(hx, hy, hw, hh, 0, 200, 255, 60);
+    render_rect_outline(hx, hy, hw, hh, 0, 220, 255, 255);
+
+    // Obstacle / sack hitboxes
+    for (int i = 0; i < FOREST_MAX_TIME; i++) {
+        double obstacle_pos = (i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
+        if (obstacle_pos < -80 || obstacle_pos > SCREEN_WIDTH + 80) {
+            continue;
+        }
+
+        ObstacleType obs = game_ctx.obstacles[i];
+        if (obs != OBS_NONE) {
+            int x = 0, y = 0, w = 32, h = 32;
+            Uint8 r = 255, g = 80, b = 80;
+            bool would_hit = false;
+
+            switch (obs) {
+            case OBS_CATAPULT: {
+                Texture *t = textures.catapult[0];
+                w = t ? query_texture_width(t) : 40;
+                h = t ? query_texture_height(t) : 40;
+                x = (int)(obstacle_pos - 8);
+                y = 112;
+                would_hit = !hugo_safe_jump;
+                r = 255; g = 120; b = 40; // needs jump
+                break;
+            }
+            case OBS_TRAP: {
+                Texture *t = textures.trap[0];
+                w = t ? query_texture_width(t) : 40;
+                h = t ? query_texture_height(t) : 40;
+                x = (int)(obstacle_pos - 8);
+                y = 152;
+                would_hit = !hugo_safe_jump;
+                r = 255; g = 120; b = 40;
+                break;
+            }
+            case OBS_ROCK: {
+                Texture *t = textures.rock[0];
+                w = t ? query_texture_width(t) : 40;
+                h = t ? query_texture_height(t) : 40;
+                double offset = sin(fract * (2.0 * M_PI)) * 15.0;
+                x = (int)(obstacle_pos - offset);
+                y = 120;
+                would_hit = !hugo_safe_jump;
+                r = 255; g = 120; b = 40;
+                break;
+            }
+            case OBS_TREE: {
+                Texture *swing = textures.tree[0];
+                w = swing ? query_texture_width(swing) : 48;
+                h = swing ? query_texture_height(swing) : 48;
+                x = (int)obstacle_pos;
+                y = 62;
+                would_hit = !hugo_safe_duck;
+                r = 80; g = 180; b = 255; // needs duck
+                break;
+            }
+            default:
+                break;
+            }
+
+            if (would_hit) {
+                r = 255; g = 40; b = 40;
+            } else {
+                r = 40; g = 220; b = 80;
+            }
+
+            Uint8 fill_a = (i == check_idx) ? 120 : 70;
+            render_rect(x, y, w, h, r, g, b, fill_a);
+            render_rect_outline(x, y, w, h, r, g, b, 255);
+            if (i == check_idx) {
+                render_rect_outline(x - 2, y - 2, w + 4, h + 4, 255, 255, 0, 255);
+            }
+        }
+
+        if (game_ctx.sacks[i] != 0) {
+            Texture *t = textures.sack[0];
+            int sw = t ? query_texture_width(t) : 24;
+            int sh = t ? query_texture_height(t) : 24;
+            int sx = (int)(obstacle_pos - 16);
+            int sy = 32;
+            bool collectible = hugo_safe_jump;
+            Uint8 r = collectible ? 255 : 180;
+            Uint8 g = collectible ? 220 : 80;
+            Uint8 b = collectible ? 40 : 255;
+            render_rect(sx, sy, sw, sh, r, g, b, 70);
+            render_rect_outline(sx, sy, sw, sh, r, g, b, 255);
+        }
+    }
+
+    // Legend strip at top
+    render_rect(0, 0, SCREEN_WIDTH, 12, 0, 0, 0, 140);
+    render_rect(4, 2, 8, 8, 255, 40, 40, 200);      // hit
+    render_rect(16, 2, 8, 8, 40, 220, 80, 200);     // safe
+    render_rect(28, 2, 8, 8, 0, 220, 255, 200);      // hugo
+    render_rect(40, 2, 8, 8, 255, 255, 0, 200);      // trigger
+}
+
 // Render background (match Python parallax as close as possible)
 void render_forest_background() {
     double hills_speed = 6.0 * FOREST_BG_SPEED_MULTIPLIER;
@@ -416,6 +560,7 @@ void render_forest_playing_content() {
     render_leaves();
     render_hugo();
     render_controls();
+    render_collision_debug();
 }
 
 void render_forest_playing() {
@@ -959,6 +1104,10 @@ ForestState process_game_over(InputState state) {
 
 
 GameState process_forest(InputState state){
+    if (state.debug_toggle) {
+        debug_show_collisions = !debug_show_collisions;
+        printf("Collision debug: %s\n", debug_show_collisions ? "ON" : "OFF");
+    }
 
     ForestState next_state = STATE_FOREST_NONE;
 

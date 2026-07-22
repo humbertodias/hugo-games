@@ -97,7 +97,7 @@ void game_loop() {
 int main(int argc, char* argv[]) {
     printf("Hugo Lite - Single Player Forest Game\n");
     printf("Based on the Hugo TV game from the 90s\n");
-    printf("Controls: Press 2/UP to JUMP, 8/DOWN to DUCK, 5 to START, ESC to quit\n\n");
+    printf("Controls: Press 2/UP to JUMP, 8/DOWN to DUCK, 5 to START, F1 collision debug, ESC to quit\n\n");
 
     data_dir = (argc >= 2) ? argv[1] : "data";
 
