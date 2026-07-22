@@ -244,4 +244,6 @@ void FreeCGF(cgfinfo info)
   if (info.head.numpal != 0)
     free(info.pal);
   free(info.data);
+  if (info.fp)
+    fclose(info.fp);
 }

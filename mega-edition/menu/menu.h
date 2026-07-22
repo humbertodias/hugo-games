@@ -716,23 +716,36 @@ void UnloadFiles()
   }
   if (wavdev)
   {
+    SDL_PauseAudioDevice(wavdev,1);
     SDL_CloseAudioDevice(wavdev);
+    wavdev = 0;
   }
   if (wavbuf)
   {
     SDL_FreeWAV(wavbuf);
+    wavbuf = NULL;
+  }
+  if (filmmdev)
+  {
+    SDL_PauseAudioDevice(filmmdev,1);
+    SDL_CloseAudioDevice(filmmdev);
+    filmmdev = 0;
   }
   if (filmmbuf)
   {
     SDL_FreeWAV(filmmbuf);
+    filmmbuf = NULL;
   }
   if (filmsdev)
   {
-    SDL_CloseAudioDevice(filmmdev);
+    SDL_PauseAudioDevice(filmsdev,1);
+    SDL_CloseAudioDevice(filmsdev);
+    filmsdev = 0;
   }
-  if (filmmdev)
+  if (filmsbuf)
   {
-    SDL_CloseAudioDevice(filmmdev);
+    SDL_FreeWAV(filmsbuf);
+    filmsbuf = NULL;
   }
   for (i = 0; i<21; ++i)
   {
@@ -767,11 +780,14 @@ void UnloadFiles()
   }
   if (cursdev)
   {
+    SDL_PauseAudioDevice(cursdev,1);
     SDL_CloseAudioDevice(cursdev);
+    cursdev = 0;
   }
   if (cursbuf)
   {
     SDL_FreeWAV(cursbuf);
+    cursbuf = NULL;
   }
   if (modeicon.fp)
   {
@@ -783,19 +799,25 @@ void UnloadFiles()
   }
   if (toggdev)
   {
+    SDL_PauseAudioDevice(toggdev,1);
     SDL_CloseAudioDevice(toggdev);
+    toggdev = 0;
   }
   if (toggbuf)
   {
     SDL_FreeWAV(toggbuf);
+    toggbuf = NULL;
   }
   if (wipedev)
   {
+    SDL_PauseAudioDevice(wipedev,1);
     SDL_CloseAudioDevice(wipedev);
+    wipedev = 0;
   }
   if (wipebuf)
   {
     SDL_FreeWAV(wipebuf);
+    wipebuf = NULL;
   }
   for (i = 0; i<5; ++i)
   {
@@ -1017,7 +1039,7 @@ int StartMenu(SDL_Window *window)
 {
   Uint32 opn = OpenFiles();
   Uint32 i, Timewav;
-  Uint32 exit = 0;
+  Uint32 menuexit = 0;
   Uint32 score;
   SDL_Surface *screen = SDL_GetWindowSurface(window);
   SDL_Surface *bkgr;
@@ -1072,16 +1094,22 @@ int StartMenu(SDL_Window *window)
   SDL_PauseAudioDevice(wavdev,0);
   listfilm(screen,bkgr,window,1);
   while (SDL_PollEvent(&e));
-  while (!exit)
+  while (!menuexit)
   {
     while (SDL_PollEvent(&e))
     {
+      if (e.type == SDL_QUIT ||
+          (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE))
+      {
+        menuexit = 1;
+        break;
+      }
       if (e.type == SDL_KEYDOWN)
       {
         if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
         {
-          selectmenu = 1;
-          nummenu = 4;
+          menuexit = 1;
+          break;
         }
         else if ((e.key.keysym.scancode == SDL_SCANCODE_DOWN)||(e.key.keysym.scancode == SDL_SCANCODE_KP_2))
         {
@@ -1228,7 +1256,7 @@ int StartMenu(SDL_Window *window)
             }
             else if (nummenu == 4)
             {
-              exit = 1;
+              menuexit = 1;
             }
           }
           else
@@ -1254,13 +1282,11 @@ int StartMenu(SDL_Window *window)
             listfilm(screen,bkgr,window,1);
           }
         }
+        break;
       }
-      else if (e.type == SDL_QUIT)
-      {
-        exit = 1;
-      }
-      while (SDL_PollEvent(&e));
     }
+    if (menuexit)
+      break;
     SDL_BlitSurface(bkgr,NULL,screen,NULL);
     DrawCGF(arrows,0,0,screen,TintDown,0);
     DrawCGF(arrows,2,0,screen,TintLeft,0);
