@@ -338,6 +338,14 @@ int OpenFiles()
     menufont.pal[i*4+1] = defaultpal[i*3+1];
     menufont.pal[i*4+2] = defaultpal[i*3+2];
   }
+  for (i = 0; i<menufont.head.num; ++i)
+  {
+    menufont.data[i].posx = 0;
+  }
+  for (i = 0; i<ultrafont.head.num; ++i)
+  {
+    ultrafont.data[i].posx = 0;
+  }
   txt = fopen(datapath("MenuData/games.txt"),"rb");
   if (txt == NULL)
   {
