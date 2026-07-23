@@ -215,14 +215,46 @@ void render_obstacles() {
 
         switch (game_ctx.obstacles[i]) {
         case OBS_CATAPULT: {
-            int idx = frame % ((int)textures.catapult.head.num);
+            /* Rest compressed; spring only when Hugo is on the platform middle. */
+            int nframes = (int)textures.catapult.head.num;
+            if (nframes < 1) nframes = 1;
+            int idx = 0;
+            int cat_w = forest_cgf_width(&textures.catapult);
+            int hugo_w = forest_cgf_width(&textures.hugo_side);
+            if (cat_w <= 0) cat_w = 51;
+            if (hugo_w <= 0) hugo_w = 58;
+            int cat_x = (int)(obstacle_pos - 8);
+            int hugo_cx = HUGO_X_POS + hugo_w / 2;
+            int cat_cx = cat_x + cat_w / 2;
+            int delta = hugo_cx - cat_cx; /* <0 approaching, 0 = on middle */
+            int start_dist = cat_w / 2;
+            if (!game_ctx.arrow_up_focus && delta >= -start_dist && delta <= start_dist) {
+                double t = (double)(delta + start_dist) / (double)start_dist;
+                if (t < 0.0) t = 0.0;
+                if (t > 1.0) t = 1.0;
+                idx = (int)(t * (nframes - 1) + 1e-6);
+                if (idx >= nframes) idx = nframes - 1;
+            }
             int dy[8] = { 45, 43, 39, 34, 29, 22, 14, 1 };
             int y = 112 + dy[idx % 8];
-            forest_draw_cgf_at(&textures.catapult, idx, (int)(obstacle_pos - 8), y, 1);
+            forest_draw_cgf_at(&textures.catapult, idx, cat_x, y, 1);
             break;
         }
         case OBS_TRAP: {
-            int idx = frame % ((int)textures.trap.head.num);
+            /* Rest closed; snap only when Hugo is about to hit (not jumping). */
+            int nframes = (int)textures.trap.head.num;
+            if (nframes < 1) nframes = 1;
+            int idx = 0;
+            double eta = (double)i - game_ctx.parallax_pos;
+            const double anim_start = 1.35;
+            const double anim_duration = 0.35;
+            if (!game_ctx.arrow_up_focus && eta < anim_start) {
+                double t = (anim_start - eta) / anim_duration;
+                if (t < 0.0) t = 0.0;
+                if (t > 1.0) t = 1.0;
+                idx = (int)(t * (nframes - 1) + 1e-6);
+                if (idx >= nframes) idx = nframes - 1;
+            }
             int dy[6] = { 176, 173, 169, 165, 176, 176 };
             int y = dy[idx % 6] - 24;
             forest_draw_cgf_at(&textures.trap, idx, (int)(obstacle_pos - 8), y, 1);
@@ -730,18 +762,36 @@ ForestState process_forest_playing(InputState state) {
         }
     }
 
+    /* Catapult launches when Hugo is standing on its middle (not jumping). */
+    if (!game_ctx.arrow_up_focus) {
+        int hugo_w = forest_cgf_width(&textures.hugo_side);
+        int cat_w = forest_cgf_width(&textures.catapult);
+        if (hugo_w <= 0) hugo_w = 58;
+        if (cat_w <= 0) cat_w = 51;
+        int hugo_cx = HUGO_X_POS + hugo_w / 2;
+        int mid_tol = cat_w / 5;
+        if (mid_tol < 6) mid_tol = 6;
+
+        for (int i = 0; i < FOREST_MAX_TIME; i++) {
+            if (game_ctx.obstacles[i] != OBS_CATAPULT) continue;
+            double obstacle_pos = (i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
+            int cat_cx = (int)(obstacle_pos - 8) + cat_w / 2;
+            if (abs(hugo_cx - cat_cx) <= mid_tol) {
+                if (FOREST_SOUND_READY(audio.sfx_hugo_launch)) forest_play(&audio.sfx_hugo_launch);
+                if (FOREST_SOUND_READY(audio.sfx_catapult_eject)) forest_play(&audio.sfx_catapult_eject);
+                game_ctx.obstacles[i] = OBS_NONE;
+                return STATE_FOREST_FLYING_START;
+            }
+        }
+    }
+
     // New second: handle collisions and sacks
     int current_second = (int)floor(game_ctx.parallax_pos);
     if (game_ctx.old_second != current_second) {
 
         ObstacleType obs = game_ctx.obstacles[integer];
         if (obs != OBS_NONE) {
-            if (obs == OBS_CATAPULT && !game_ctx.arrow_up_focus) {
-                if (FOREST_SOUND_READY(audio.sfx_hugo_launch)) forest_play(&audio.sfx_hugo_launch);
-                if (FOREST_SOUND_READY(audio.sfx_catapult_eject)) forest_play(&audio.sfx_catapult_eject);
-                game_ctx.obstacles[integer] = OBS_NONE;
-                return STATE_FOREST_FLYING_START;
-            } else if (obs == OBS_TRAP && !game_ctx.arrow_up_focus) {
+            if (obs == OBS_TRAP && !game_ctx.arrow_up_focus) {
                 if (FOREST_SOUND_READY(audio.sfx_hugo_hittrap)) forest_play(&audio.sfx_hugo_hittrap);
                 game_ctx.obstacles[integer] = OBS_NONE;
                 return STATE_FOREST_TRAP_ANIMATION;
