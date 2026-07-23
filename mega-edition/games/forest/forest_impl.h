@@ -1,0 +1,7 @@
+#include "draw.c"
+#include "audio.c"
+#include "files.c"
+#include "state.c"
+#include "forest.c"
+#include "cave.c"
+#include "start.c"

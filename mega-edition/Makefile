@@ -7,8 +7,8 @@
 #laby:
 #	gcc testlaby.c -Wall -lSDL2 -g -o testlaby
 
-CC_FLAGS := -Wall $(shell pkg-config --cflags sdl2)
-LD_FLAGS := $(shell pkg-config --libs sdl2)
+CC_FLAGS := -std=c11 -Wall $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_image)
+LD_FLAGS := $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image) -lm
 CC := gcc
 
 all:

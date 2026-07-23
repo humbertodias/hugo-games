@@ -65,38 +65,38 @@ int OpenFiles()
   char tmps[10];
   FILE *pal;
   Uint32 i,j,k,tsz;
-  pal = fopen(datapath("MenuData/mainpal.pal"),"rb");
+  pal = fopen("./data/MenuData/mainpal.pal","rb");
   if (pal == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/mainpal.pal"));
+    printf("(Menu Error)File not found: ./data/MenuData/mainpal.pal\n");
     return 1;
   }
   fread(tmps,sizeof(Uint8),10,pal);
   if (strncmp("CPAL768STD",tmps,10))
   {
     fclose(pal);
-    printf("(Menu Error)Unknow format of palette: %s\n", datapath("MenuData/mainpal.pal"));
+    printf("(Menu Error)Unknow format of palette: ./data/MenuData/mainpal.pal\n");
     return 1;
   }
   fseek(pal,10,SEEK_SET);
   fread(defaultpal,sizeof(Uint8),768,pal);
   fclose(pal);
-  mainpix = LoadRAW(datapath("MenuData/mainpix.raw"));
+  mainpix = LoadRAW("./data/MenuData/mainpix.raw");
   if (mainpix.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/mainpix.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/mainpix.raw\n");
     return 1;
   }
-  hugologo = LoadRAW(datapath("MenuData/hugologo.raw"));
+  hugologo = LoadRAW("./data/MenuData/hugologo.raw");
   if (hugologo.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/hugologo.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/hugologo.raw\n");
     return 1;
   }
-  arrows = LoadCGF(datapath("MenuData/Arrows.cgf"));
+  arrows = LoadCGF("./data/MenuData/Arrows.cgf");
   if (arrows.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Arrows.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/Arrows.cgf\n");
     return 1;
   }
   arrows.head.numpal = 0x100;
@@ -107,10 +107,10 @@ int OpenFiles()
     arrows.pal[i*4+1] = defaultpal[i*3+1];
     arrows.pal[i*4+2] = defaultpal[i*3+2];
   }
-  film = LoadCGF(datapath("MenuData/Film.cgf"));
+  film = LoadCGF("./data/MenuData/Film.cgf");
   if (film.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Film.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/Film.cgf\n");
     return 1;
   }
   film.head.numpal = 0x100;
@@ -121,191 +121,191 @@ int OpenFiles()
     film.pal[i*4+1] = defaultpal[i*3+1];
     film.pal[i*4+2] = defaultpal[i*3+2];
   }
-  if (SDL_LoadWAV(datapath("MenuData/Menyhed-df.wav"),&wavspec,&wavbuf,&wavlen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Menyhed-df.wav",&wavspec,&wavbuf,&wavlen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Menyhed-df.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Menyhed-df.wav\n");
     return 1;
   }
   wavdev = SDL_OpenAudioDevice(NULL,0,&wavspec,NULL,0);
-  if (SDL_LoadWAV(datapath("MenuData/Filmmove.wav"),&filmmspec,&filmmbuf,&filmmlen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Filmmove.wav",&filmmspec,&filmmbuf,&filmmlen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Filmmove.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Filmmove.wav\n");
     return 1;
   }
-  if (SDL_LoadWAV(datapath("MenuData/Filmstop.wav"),&filmsspec,&filmsbuf,&filmslen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Filmstop.wav",&filmsspec,&filmsbuf,&filmslen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Filmstop.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Filmstop.wav\n");
     return 1;
   }
   filmmdev = SDL_OpenAudioDevice(NULL,0,&filmmspec,NULL,0);
   filmsdev = SDL_OpenAudioDevice(NULL,0,&filmsspec,NULL,0);
-  gameraw[0] = LoadRAW(datapath("MenuData/LABY.RAW"));
+  gameraw[0] = LoadRAW("./data/MenuData/LABY.RAW");
   if (gameraw[0].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/LABY.RAW"));
+    printf("(Menu Error)File not found: ./data/MenuData/LABY.RAW\n");
     return 1;
   }
-  gameraw[1] = LoadRAW(datapath("MenuData/train.raw"));
+  gameraw[1] = LoadRAW("./data/MenuData/train.raw");
   if (gameraw[1].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/train.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/train.raw\n");
     return 1;
   }
-  gameraw[2] = LoadRAW(datapath("MenuData/plane.raw"));
+  gameraw[2] = LoadRAW("./data/MenuData/plane.raw");
   if (gameraw[2].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/plane.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/plane.raw\n");
     return 1;
   }
-  gameraw[3] = LoadRAW(datapath("MenuData/forest.raw"));
+  gameraw[3] = LoadRAW("./data/MenuData/forest.raw");
   if (gameraw[3].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/forest.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/forest.raw\n");
     return 1;
   }
-  gameraw[4] = LoadRAW(datapath("MenuData/mountain.raw"));
+  gameraw[4] = LoadRAW("./data/MenuData/mountain.raw");
   if (gameraw[4].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/mountain.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/mountain.raw\n");
     return 1;
   }
-  gameraw[5] = LoadRAW(datapath("MenuData/minetrack.raw"));
+  gameraw[5] = LoadRAW("./data/MenuData/minetrack.raw");
   if (gameraw[5].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/minetrack.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/minetrack.raw\n");
     return 1;
   }
-  gameraw[6] = LoadRAW(datapath("MenuData/SCUBA.RAW"));
+  gameraw[6] = LoadRAW("./data/MenuData/SCUBA.RAW");
   if (gameraw[6].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/SCUBA.RAW"));
+    printf("(Menu Error)File not found: ./data/MenuData/SCUBA.RAW\n");
     return 1;
   }
-  gameraw[7] = LoadRAW(datapath("MenuData/icecav.raw"));
+  gameraw[7] = LoadRAW("./data/MenuData/icecav.raw");
   if (gameraw[7].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/icecav.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/icecav.raw\n");
     return 1;
   }
-  gameraw[8] = LoadRAW(datapath("MenuData/lumberjack.raw"));
+  gameraw[8] = LoadRAW("./data/MenuData/lumberjack.raw");
   if (gameraw[8].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/lumberjack.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/lumberjack.raw\n");
     return 1;
   }
-  gameraw[9] = LoadRAW(datapath("MenuData/skateboard.raw"));
+  gameraw[9] = LoadRAW("./data/MenuData/skateboard.raw");
   if (gameraw[9].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/skateboard.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/skateboard.raw\n");
     return 1;
   }
-  gameraw[10] = LoadRAW(datapath("MenuData/screen001.raw"));
+  gameraw[10] = LoadRAW("./data/MenuData/screen001.raw");
   if (gameraw[10].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen001.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen001.raw\n");
     return 1;
   }
-  gameraw[11] = LoadRAW(datapath("MenuData/screen002.raw"));
+  gameraw[11] = LoadRAW("./data/MenuData/screen002.raw");
   if (gameraw[11].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen002.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen002.raw\n");
     return 1;
   }
-  gameraw[12] = LoadRAW(datapath("MenuData/moore.raw"));
+  gameraw[12] = LoadRAW("./data/MenuData/moore.raw");
   if (gameraw[12].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/moore.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/moore.raw\n");
     return 1;
   }
-  gameraw[13] = LoadRAW(datapath("MenuData/screen000.raw"));
+  gameraw[13] = LoadRAW("./data/MenuData/screen000.raw");
   if (gameraw[13].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen000.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen000.raw\n");
     return 1;
   }
-  gameraw[14] = LoadRAW(datapath("MenuData/screen003.raw"));
+  gameraw[14] = LoadRAW("./data/MenuData/screen003.raw");
   if (gameraw[14].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen003.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen003.raw\n");
     return 1;
   }
-  gameraw[15] = LoadRAW(datapath("MenuData/screen005.raw"));
+  gameraw[15] = LoadRAW("./data/MenuData/screen005.raw");
   if (gameraw[15].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen005.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen005.raw\n");
     return 1;
   }
-  gameraw[16] = LoadRAW(datapath("MenuData/screen007.raw"));
+  gameraw[16] = LoadRAW("./data/MenuData/screen007.raw");
   if (gameraw[16].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen007.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen007.raw\n");
     return 1;
   }
-  gameraw[17] = LoadRAW(datapath("MenuData/screen004.raw"));
+  gameraw[17] = LoadRAW("./data/MenuData/screen004.raw");
   if (gameraw[17].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen004.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen004.raw\n");
     return 1;
   }
-  gameraw[18] = LoadRAW(datapath("MenuData/screen006.raw"));
+  gameraw[18] = LoadRAW("./data/MenuData/screen006.raw");
   if (gameraw[18].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/screen006.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/screen006.raw\n");
     return 1;
   }
-  gameraw[19] = LoadRAW(datapath("MenuData/stones.raw"));
+  gameraw[19] = LoadRAW("./data/MenuData/stones.raw");
   if (gameraw[19].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/stones.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/stones.raw\n");
     return 1;
   }
-  gameraw[20] = LoadRAW(datapath("MenuData/river.raw"));
+  gameraw[20] = LoadRAW("./data/MenuData/river.raw");
   if (gameraw[20].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/river.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/river.raw\n");
     return 1;
   }
-  ultrafont = LoadCGF(datapath("MenuData/UltraFont.cgf"));
+  ultrafont = LoadCGF("./data/MenuData/UltraFont.cgf");
   if (ultrafont.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/UltraFont.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/UltraFont.cgf\n");
     return 1;
   }
   ultramap = (char *)malloc(sizeof(char)*ultrafont.head.num);
-  charmap = fopen(datapath("MenuData/charmapultra.txt"),"rb");
+  charmap = fopen("./data/MenuData/charmapultra.txt","rb");
   if (charmap == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/charmapultra.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/charmapultra.txt\n");
     return 1;
   }
   fread(ultramap,sizeof(char),ultrafont.head.num,charmap);
   fclose(charmap);
-  creditfont = LoadCGF(datapath("MenuData/CreditFont.cgf"));
+  creditfont = LoadCGF("./data/MenuData/CreditFont.cgf");
   if (creditfont.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/CreditFont.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/CreditFont.cgf\n");
     return 1;
   }
   creditmap = (char *)malloc(sizeof(char)*creditfont.head.num);
-  charmap = fopen(datapath("MenuData/charmapcredit.txt"),"rb");
+  charmap = fopen("./data/MenuData/charmapcredit.txt","rb");
   if (charmap == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/charmapcredit.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/charmapcredit.txt\n");
     return 1;
   }
   fread(creditmap,sizeof(char),creditfont.head.num,charmap);
   fclose(charmap);
-  menufont = LoadCGF(datapath("MenuData/MenuFont.cgf"));
+  menufont = LoadCGF("./data/MenuData/MenuFont.cgf");
   if (menufont.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/MenuFont.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/MenuFont.cgf\n");
     return 1;
   }
   menumap = (char *)malloc(sizeof(char)*menufont.head.num);
-  charmap = fopen(datapath("MenuData/charmapmenu.txt"),"rb");
+  charmap = fopen("./data/MenuData/charmapmenu.txt","rb");
   if (charmap == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/charmapmenu.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/charmapmenu.txt\n");
     return 1;
   }
   fread(menumap,sizeof(char),menufont.head.num,charmap);
@@ -346,10 +346,10 @@ int OpenFiles()
   {
     ultrafont.data[i].posx = 0;
   }
-  txt = fopen(datapath("MenuData/games.txt"),"rb");
+  txt = fopen("./data/MenuData/games.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/games.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/games.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -367,10 +367,10 @@ int OpenFiles()
     gamesname[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/menutext.txt"),"rb");
+  txt = fopen("./data/MenuData/menutext.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/menutext.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/menutext.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -388,16 +388,16 @@ int OpenFiles()
     menuname[i][k] = 0;
     j++;
   }
-  if (SDL_LoadWAV(datapath("MenuData/Cursor.wav"),&cursspec,&cursbuf,&curslen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Cursor.wav",&cursspec,&cursbuf,&curslen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Cursor.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Cursor.wav\n");
     return 1;
   }
   cursdev = SDL_OpenAudioDevice(NULL,0,&cursspec,NULL,0);
-  modeicon = LoadCGF(datapath("MenuData/ModeIcon.cgf"));
+  modeicon = LoadCGF("./data/MenuData/ModeIcon.cgf");
   if (modeicon.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/ModeIcon.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/ModeIcon.cgf\n");
     return 1;
   }
   modeicon.head.numpal = 0x100;
@@ -408,10 +408,10 @@ int OpenFiles()
     modeicon.pal[i*4+1] = defaultpal[i*3+1];
     modeicon.pal[i*4+2] = defaultpal[i*3+2];
   }
-  playersicon = LoadCGF(datapath("MenuData/PlayersIcon.cgf"));
+  playersicon = LoadCGF("./data/MenuData/PlayersIcon.cgf");
   if (playersicon.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/PlayersIcon.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/PlayersIcon.cgf\n");
     return 1;
   }
   playersicon.head.numpal = 0x100;
@@ -422,52 +422,52 @@ int OpenFiles()
     playersicon.pal[i*4+1] = defaultpal[i*3+1];
     playersicon.pal[i*4+2] = defaultpal[i*3+2];
   }
-  if (SDL_LoadWAV(datapath("MenuData/Toggle.wav"),&toggspec,&toggbuf,&togglen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Toggle.wav",&toggspec,&toggbuf,&togglen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Toggle.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Toggle.wav\n");
     return 1;
   }
   toggdev = SDL_OpenAudioDevice(NULL,0,&toggspec,NULL,0);
-  if (SDL_LoadWAV(datapath("MenuData/Wipe.wav"),&wipespec,&wipebuf,&wipelen) == NULL)
+  if (SDL_LoadWAV("./data/MenuData/Wipe.wav",&wipespec,&wipebuf,&wipelen) == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/Wipe.wav"));
+    printf("(Menu Error)File not found: ./data/MenuData/Wipe.wav\n");
     return 1;
   }
   wipedev = SDL_OpenAudioDevice(NULL,0,&wipespec,NULL,0);
-  optionraw[0] = LoadRAW(datapath("MenuData/keyboard.raw"));
+  optionraw[0] = LoadRAW("./data/MenuData/keyboard.raw");
   if (optionraw[0].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/keyboard.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/keyboard.raw\n");
     return 1;
   }
-  optionraw[1] = LoadRAW(datapath("MenuData/credits.raw"));
+  optionraw[1] = LoadRAW("./data/MenuData/credits.raw");
   if (optionraw[1].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/credits.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/credits.raw\n");
     return 1;
   }
-  optionraw[2] = LoadRAW(datapath("MenuData/intro_outro.raw"));
+  optionraw[2] = LoadRAW("./data/MenuData/intro_outro.raw");
   if (optionraw[2].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/intro_outro.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/intro_outro.raw\n");
     return 1;
   }
-  optionraw[3] = LoadRAW(datapath("MenuData/pad.raw"));
+  optionraw[3] = LoadRAW("./data/MenuData/pad.raw");
   if (optionraw[3].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/pad.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/pad.raw\n");
     return 1;
   }
-  optionraw[4] = LoadRAW(datapath("MenuData/volume.raw"));
+  optionraw[4] = LoadRAW("./data/MenuData/volume.raw");
   if (optionraw[4].fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/volume.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/volume.raw\n");
     return 1;
   }
-  txt = fopen(datapath("MenuData/options.txt"),"rb");
+  txt = fopen("./data/MenuData/options.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/options.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/options.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -485,10 +485,10 @@ int OpenFiles()
     optionsname[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/display.txt"),"rb");
+  txt = fopen("./data/MenuData/display.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/display.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/display.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -506,10 +506,10 @@ int OpenFiles()
     optdisplay[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/minigames.txt"),"rb");
+  txt = fopen("./data/MenuData/minigames.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/minigames.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/minigames.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -527,10 +527,10 @@ int OpenFiles()
     minigames[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/itework.txt"),"rb");
+  txt = fopen("./data/MenuData/itework.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/itework.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/itework.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -548,10 +548,10 @@ int OpenFiles()
     itework[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/programmers.txt"),"rb");
+  txt = fopen("./data/MenuData/programmers.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/programmers.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/programmers.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -569,10 +569,10 @@ int OpenFiles()
     programmers[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/graphics.txt"),"rb");
+  txt = fopen("./data/MenuData/graphics.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/graphics.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/graphics.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -590,10 +590,10 @@ int OpenFiles()
     graphics[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/sound.txt"),"rb");
+  txt = fopen("./data/MenuData/sound.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/sound.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/sound.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -611,10 +611,10 @@ int OpenFiles()
     sounds[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/producer.txt"),"rb");
+  txt = fopen("./data/MenuData/producer.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/producer.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/producer.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -632,10 +632,10 @@ int OpenFiles()
     producers[i][k] = 0;
     j++;
   }
-  txt = fopen(datapath("MenuData/eproducer.txt"),"rb");
+  txt = fopen("./data/MenuData/eproducer.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/eproducer.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/eproducer.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -653,28 +653,28 @@ int OpenFiles()
     eproducers[i][k] = 0;
     j++;
   }
-  hisc = LoadRAW(datapath("MenuData/highscore.raw"));
+  hisc = LoadRAW("./data/MenuData/highscore.raw");
   if (hisc.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/highscore.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/highscore.raw\n");
     return 1;
   }
-  hiscback = LoadRAW(datapath("MenuData/hiscoreback.raw"));
+  hiscback = LoadRAW("./data/MenuData/hiscoreback.raw");
   if (hiscback.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/hiscoreback.raw"));
+    printf("(Menu Error)File not found: ./data/MenuData/hiscoreback.raw\n");
     return 1;
   }
-  hiscreens = LoadCGF(datapath("MenuData/hiscreens.cgf"));
+  hiscreens = LoadCGF("./data/MenuData/hiscreens.cgf");
   if (hiscreens.fp == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/hiscreens.cgf"));
+    printf("(Menu Error)File not found: ./data/MenuData/hiscreens.cgf\n");
     return 1;
   }
-  txt = fopen(datapath("MenuData/hiclean.txt"),"rb");
+  txt = fopen("./data/MenuData/hiclean.txt","rb");
   if (txt == NULL)
   {
-    printf("(Menu Error)File not found: %s\n", datapath("MenuData/hiclean.txt"));
+    printf("(Menu Error)File not found: ./data/MenuData/hiclean.txt\n");
     return 1;
   }
   tsz = fread(temptxt,sizeof(char),0x200,txt);
@@ -716,36 +716,23 @@ void UnloadFiles()
   }
   if (wavdev)
   {
-    SDL_PauseAudioDevice(wavdev,1);
     SDL_CloseAudioDevice(wavdev);
-    wavdev = 0;
   }
   if (wavbuf)
   {
     SDL_FreeWAV(wavbuf);
-    wavbuf = NULL;
-  }
-  if (filmmdev)
-  {
-    SDL_PauseAudioDevice(filmmdev,1);
-    SDL_CloseAudioDevice(filmmdev);
-    filmmdev = 0;
   }
   if (filmmbuf)
   {
     SDL_FreeWAV(filmmbuf);
-    filmmbuf = NULL;
   }
   if (filmsdev)
   {
-    SDL_PauseAudioDevice(filmsdev,1);
-    SDL_CloseAudioDevice(filmsdev);
-    filmsdev = 0;
+    SDL_CloseAudioDevice(filmmdev);
   }
-  if (filmsbuf)
+  if (filmmdev)
   {
-    SDL_FreeWAV(filmsbuf);
-    filmsbuf = NULL;
+    SDL_CloseAudioDevice(filmmdev);
   }
   for (i = 0; i<21; ++i)
   {
@@ -780,14 +767,11 @@ void UnloadFiles()
   }
   if (cursdev)
   {
-    SDL_PauseAudioDevice(cursdev,1);
     SDL_CloseAudioDevice(cursdev);
-    cursdev = 0;
   }
   if (cursbuf)
   {
     SDL_FreeWAV(cursbuf);
-    cursbuf = NULL;
   }
   if (modeicon.fp)
   {
@@ -799,25 +783,19 @@ void UnloadFiles()
   }
   if (toggdev)
   {
-    SDL_PauseAudioDevice(toggdev,1);
     SDL_CloseAudioDevice(toggdev);
-    toggdev = 0;
   }
   if (toggbuf)
   {
     SDL_FreeWAV(toggbuf);
-    toggbuf = NULL;
   }
   if (wipedev)
   {
-    SDL_PauseAudioDevice(wipedev,1);
     SDL_CloseAudioDevice(wipedev);
-    wipedev = 0;
   }
   if (wipebuf)
   {
     SDL_FreeWAV(wipebuf);
-    wipebuf = NULL;
   }
   for (i = 0; i<5; ++i)
   {
@@ -844,6 +822,8 @@ void printtext(cgfinfo font, char *charmaps, char *str, Uint32 w, Uint32 h, Uint
 {
   Uint32 i, j, sm = 0;
   char tmp;
+  for (i = 0; i<font.head.num; ++i)
+    font.data[i].posx = 0;
   MoveRightCGF(&font,w);
   MoveDownCGF(&font,h);
   for (i = 0; i<sz; ++i)
@@ -1034,12 +1014,14 @@ void hidefilm (SDL_Surface *screen, SDL_Surface *bkgr, SDL_Window *window)
 #include "options.h"
 #include "hiscore.h"
 #include "../games/laby/start.h"
+#include "../games/forest/start.h"
+#include "../games/forest/forest_impl.h"
 
 int StartMenu(SDL_Window *window)
 {
   Uint32 opn = OpenFiles();
   Uint32 i, Timewav;
-  Uint32 menuexit = 0;
+  Uint32 exit = 0;
   Uint32 score;
   SDL_Surface *screen = SDL_GetWindowSurface(window);
   SDL_Surface *bkgr;
@@ -1094,22 +1076,16 @@ int StartMenu(SDL_Window *window)
   SDL_PauseAudioDevice(wavdev,0);
   listfilm(screen,bkgr,window,1);
   while (SDL_PollEvent(&e));
-  while (!menuexit)
+  while (!exit)
   {
     while (SDL_PollEvent(&e))
     {
-      if (e.type == SDL_QUIT ||
-          (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE))
-      {
-        menuexit = 1;
-        break;
-      }
       if (e.type == SDL_KEYDOWN)
       {
         if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
         {
-          menuexit = 1;
-          break;
+          selectmenu = 1;
+          nummenu = 4;
         }
         else if ((e.key.keysym.scancode == SDL_SCANCODE_DOWN)||(e.key.keysym.scancode == SDL_SCANCODE_KP_2))
         {
@@ -1256,7 +1232,7 @@ int StartMenu(SDL_Window *window)
             }
             else if (nummenu == 4)
             {
-              menuexit = 1;
+              exit = 1;
             }
           }
           else
@@ -1265,6 +1241,10 @@ int StartMenu(SDL_Window *window)
             if (numgame == 0)
             {
               labystart(&score,gamemode,playermode,window);
+            }
+            else if (numgame == 3)
+            {
+              foreststart(&score,gamemode,playermode,window);
             }
             OpenFiles();
             MoveRightCGF(&arrows,0x102);
@@ -1282,11 +1262,13 @@ int StartMenu(SDL_Window *window)
             listfilm(screen,bkgr,window,1);
           }
         }
-        break;
       }
+      else if (e.type == SDL_QUIT)
+      {
+        exit = 1;
+      }
+      while (SDL_PollEvent(&e));
     }
-    if (menuexit)
-      break;
     SDL_BlitSurface(bkgr,NULL,screen,NULL);
     DrawCGF(arrows,0,0,screen,TintDown,0);
     DrawCGF(arrows,2,0,screen,TintLeft,0);

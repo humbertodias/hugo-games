@@ -1,0 +1,12 @@
+#ifndef FOREST_CONFIG_H
+#define FOREST_CONFIG_H
+
+#define FOREST_MAX_TIME 60
+#define FOREST_GROUND_SPEED 75
+#define HUGO_X_POS 16
+#define START_LIVES 3
+
+#define FOREST_SCREEN_WIDTH 320
+#define FOREST_SCREEN_HEIGHT 240
+
+#endif
