@@ -57,7 +57,7 @@ typedef struct {
     double hugo_crawling_time;
     double last_time;
     int old_second;
-    
+
     // Cave game state (shared context)
     int cave_selected_rope;
     int cave_win_type;
@@ -235,7 +235,26 @@ void render_obstacles() {
             break;
         }
         case OBS_TREE: {
-            int idx = frame % ((int)textures.tree.head.num);
+            /* Hang still until Hugo is close, then swing once as he approaches. */
+            int nframes = (int)textures.tree.head.num;
+            if (nframes > 0 && textures.tree.data &&
+                textures.tree.data[nframes - 1].width == 0) {
+                nframes--; /* last CGF entry is an empty terminator */
+            }
+            if (nframes < 1) nframes = 1;
+
+            int idx = 0;
+            double eta = (double)i - game_ctx.parallax_pos; /* seconds until this slot */
+            const double swing_start = 1.5;    /* start swinging when this close */
+            const double swing_duration = 0.5; /* shorter = faster swing */
+            if (eta < swing_start) {
+                double t = (swing_start - eta) / swing_duration;
+                if (t < 0.0) t = 0.0;
+                if (t > 1.0) t = 1.0;
+                idx = (int)(t * (nframes - 1) + 1e-6);
+                if (idx >= nframes) idx = nframes - 1;
+            }
+
             forest_draw_cgf_at(&textures.lone_tree, 0, (int)(obstacle_pos - 52), -40, 1);
             forest_draw_cgf_at(&textures.tree, idx, (int)obstacle_pos, 52 + 10, 1);
             break;
@@ -611,7 +630,7 @@ void render_forest_scylla_button() {
 
 void render_forest_talking_after_hurt() {
     int frame = get_frame_index(&state_metadata);
-    
+
     // Use appropriate sync data based on lives remaining
     if (game_ctx.lives == 1)
         forest_draw_sync_cgf(&textures.hugo_telllives, &textures.sync_lastlife, frame, 128, -16);
@@ -1100,11 +1119,11 @@ GameState process_forest(InputState state){
         if (next_state == STATE_FOREST_PLAYING) {
             on_resume_forest_playing();
         }
-        
+
         current_forest_state = next_state;
         reset_state(&state_metadata);
     }
-       
+
     return FOREST_STATE_NONE;
 }
 
@@ -1114,7 +1133,7 @@ void render_forest(){
     bool needs_pre_bottom = false;
     // States that need bottom rendered AFTER (POST)
     bool needs_post_bottom = false;
-    
+
     switch (current_forest_state) {
     case STATE_FOREST_WAIT_INTRO:
     case STATE_FOREST_PLAYING:
