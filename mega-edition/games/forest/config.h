@@ -3,6 +3,7 @@
 
 #define FOREST_MAX_TIME 60
 #define FOREST_GROUND_SPEED 75
+#define ROCK_ROLL_SPEED 150
 #define HUGO_X_POS 16
 #define START_LIVES 3
 

@@ -203,17 +203,20 @@ void render_forest_bottom() {
 // ---------------- RENDERING: BACKGROUND / OBSTACLES / SACKS / HUGO / CONTROLS ----------------
 
 void render_obstacles() {
-    int frame = get_frame_index(&state_metadata);
-    double fract = game_ctx.parallax_pos - floor(game_ctx.parallax_pos);
-
     for (int i = 0; i < FOREST_MAX_TIME; i++) {
-        double obstacle_pos = (i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
+        ObstacleType obs = game_ctx.obstacles[i];
+        if (obs == OBS_NONE) continue;
+
+        /* Rocks roll left faster than the ground scroll until off-screen. */
+        double obstacle_pos = (obs == OBS_ROCK)
+            ? ((double)i - game_ctx.parallax_pos) * ROCK_ROLL_SPEED
+            : ((double)i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
 
         if (obstacle_pos < -50 || obstacle_pos > FOREST_SCREEN_WIDTH + 50) {
             continue;
         }
 
-        switch (game_ctx.obstacles[i]) {
+        switch (obs) {
         case OBS_CATAPULT: {
             /* Rest compressed; spring only when Hugo is on the platform middle. */
             int nframes = (int)textures.catapult.head.num;
@@ -261,9 +264,14 @@ void render_obstacles() {
             break;
         }
         case OBS_ROCK: {
-            int idx = frame % ((int)textures.rock.head.num);
-            double offset = sin(fract * (2.0 * M_PI)) * 15.0;
-            forest_draw_cgf_at(&textures.rock, idx, (int)(obstacle_pos - offset), 120, 1);
+            /* Spin while translating left across the screen. */
+            int nframes = (int)textures.rock.head.num;
+            if (nframes < 1) nframes = 1;
+            double traveled = (double)FOREST_SCREEN_WIDTH + 50.0 - obstacle_pos;
+            if (traveled < 0.0) traveled = 0.0;
+            int idx = ((int)(traveled / 6.0)) % nframes;
+            if (idx < 0) idx = 0;
+            forest_draw_cgf_at(&textures.rock, idx, (int)obstacle_pos, 120, 1);
             break;
         }
         case OBS_TREE: {
@@ -400,12 +408,10 @@ static void render_collision_debug(void)
     int hx, hy, hw, hh;
     bool hugo_safe_jump;
     bool hugo_safe_duck;
-    double fract;
 
     if (!debug_show_collisions)
         return;
 
-    fract = game_ctx.parallax_pos - floor(game_ctx.parallax_pos);
     check_idx = (int)floor(game_ctx.parallax_pos) + 1;
     if (check_idx >= FOREST_MAX_TIME)
         check_idx = FOREST_MAX_TIME - 1;
@@ -456,12 +462,11 @@ static void render_collision_debug(void)
                 would_hit = !hugo_safe_jump;
                 break;
             case OBS_ROCK: {
-                double offset = sin(fract * (2.0 * M_PI)) * 15.0;
                 w = forest_cgf_width(&textures.rock);
                 h = forest_cgf_height(&textures.rock);
                 if (w <= 0) w = 40;
                 if (h <= 0) h = 40;
-                x = (int)(obstacle_pos - offset);
+                x = (int)((i - game_ctx.parallax_pos) * ROCK_ROLL_SPEED);
                 y = 120;
                 would_hit = !hugo_safe_jump;
                 break;
@@ -766,21 +771,34 @@ ForestState process_forest_playing(InputState state) {
     if (!game_ctx.arrow_up_focus) {
         int hugo_w = forest_cgf_width(&textures.hugo_side);
         int cat_w = forest_cgf_width(&textures.catapult);
+        int rock_w = forest_cgf_width(&textures.rock);
         if (hugo_w <= 0) hugo_w = 58;
         if (cat_w <= 0) cat_w = 51;
+        if (rock_w <= 0) rock_w = 45;
         int hugo_cx = HUGO_X_POS + hugo_w / 2;
         int mid_tol = cat_w / 5;
         if (mid_tol < 6) mid_tol = 6;
 
         for (int i = 0; i < FOREST_MAX_TIME; i++) {
-            if (game_ctx.obstacles[i] != OBS_CATAPULT) continue;
-            double obstacle_pos = (i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
-            int cat_cx = (int)(obstacle_pos - 8) + cat_w / 2;
-            if (abs(hugo_cx - cat_cx) <= mid_tol) {
-                if (FOREST_SOUND_READY(audio.sfx_hugo_launch)) forest_play(&audio.sfx_hugo_launch);
-                if (FOREST_SOUND_READY(audio.sfx_catapult_eject)) forest_play(&audio.sfx_catapult_eject);
-                game_ctx.obstacles[i] = OBS_NONE;
-                return STATE_FOREST_FLYING_START;
+            ObstacleType obs = game_ctx.obstacles[i];
+            if (obs == OBS_CATAPULT) {
+                double obstacle_pos = (i - game_ctx.parallax_pos) * FOREST_GROUND_SPEED;
+                int cat_cx = (int)(obstacle_pos - 8) + cat_w / 2;
+                if (abs(hugo_cx - cat_cx) <= mid_tol) {
+                    if (FOREST_SOUND_READY(audio.sfx_hugo_launch)) forest_play(&audio.sfx_hugo_launch);
+                    if (FOREST_SOUND_READY(audio.sfx_catapult_eject)) forest_play(&audio.sfx_catapult_eject);
+                    game_ctx.obstacles[i] = OBS_NONE;
+                    return STATE_FOREST_FLYING_START;
+                }
+            } else if (obs == OBS_ROCK) {
+                double rock_x = ((double)i - game_ctx.parallax_pos) * ROCK_ROLL_SPEED;
+                int rock_cx = (int)rock_x + rock_w / 2;
+                int hit_tol = (hugo_w + rock_w) / 4;
+                if (abs(hugo_cx - rock_cx) <= hit_tol) {
+                    if (FOREST_SOUND_READY(audio.sfx_hugo_hitlog)) forest_play(&audio.sfx_hugo_hitlog);
+                    game_ctx.obstacles[i] = OBS_NONE;
+                    return STATE_FOREST_ROCK_ANIMATION;
+                }
             }
         }
     }
@@ -795,10 +813,6 @@ ForestState process_forest_playing(InputState state) {
                 if (FOREST_SOUND_READY(audio.sfx_hugo_hittrap)) forest_play(&audio.sfx_hugo_hittrap);
                 game_ctx.obstacles[integer] = OBS_NONE;
                 return STATE_FOREST_TRAP_ANIMATION;
-            } else if (obs == OBS_ROCK && !game_ctx.arrow_up_focus) {
-                if (FOREST_SOUND_READY(audio.sfx_hugo_hitlog)) forest_play(&audio.sfx_hugo_hitlog);
-                game_ctx.obstacles[integer] = OBS_NONE;
-                return STATE_FOREST_ROCK_ANIMATION;
             } else if (obs == OBS_TREE) {
                 if (game_ctx.arrow_down_focus) {
                     if (FOREST_SOUND_READY(audio.sfx_tree_swush)) forest_play(&audio.sfx_tree_swush);
