@@ -360,17 +360,17 @@ void render_hugo() {
 }
 
 void render_controls() {
-    // arrows[0] up normal, [1] up pressed, [2] down normal, [3] down pressed
+    // frames 0 up normal, 1 up pressed, 2 down normal, 3 down pressed
     if (game_ctx.arrow_up_focus) {
-        forest_blit_surface(textures.arrows[1], 256, 17);
-    } else if (textures.arrows[0]) {
-        forest_blit_surface(textures.arrows[0], 256 + 2, 16 + 3);
+        forest_draw_cgf_at(&textures.arrows, 1, 256, 17, 1);
+    } else if (textures.arrows.fp) {
+        forest_draw_cgf_at(&textures.arrows, 0, 256 + 2, 16 + 3, 1);
     }
 
     if (game_ctx.arrow_down_focus) {
-        forest_blit_surface(textures.arrows[3], 256, 54);
-    } else if (textures.arrows[2]) {
-        forest_blit_surface(textures.arrows[2], 256 + 2, 54 + 2);
+        forest_draw_cgf_at(&textures.arrows, 3, 256, 54, 1);
+    } else if (textures.arrows.fp) {
+        forest_draw_cgf_at(&textures.arrows, 2, 256 + 2, 54 + 2, 1);
     }
 }
 

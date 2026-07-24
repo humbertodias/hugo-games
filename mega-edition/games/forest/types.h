@@ -47,7 +47,7 @@ typedef struct {
 
   cgfinfo score_numbers;
   cgfinfo hugo_lives;
-  SDL_Surface *arrows[4];
+  cgfinfo arrows;
 
   ForestAnim hugohitlog;
   ForestAnim hugohitlog_talk;

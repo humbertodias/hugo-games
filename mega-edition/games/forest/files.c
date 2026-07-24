@@ -1,6 +1,5 @@
 #include "files.h"
 #include "audio.h"
-#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -99,16 +98,7 @@ int ForestOpenFiles(void)
     }
   }
 
-  for (int i = 0; i < 4; i++)
-  {
-    snprintf(path, sizeof(path), "resources/fixed_assets/arrows.cgf_%d.png", i);
-    textures.arrows[i] = IMG_Load(datapath(path));
-    if (!textures.arrows[i])
-    {
-      printf("(Forest Error)File not found: %s (%s)\n", datapath(path), IMG_GetError());
-      return 1;
-    }
-  }
+  LOAD_CGF(arrows, "ForestData/gfx/arrows.cgf");
 
   textures.bg_gradient = SDL_LoadBMP(datapath("resources/fixed_assets/gradient.bmp"));
   if (!textures.bg_gradient)
@@ -269,13 +259,9 @@ void ForestUnloadFiles(void)
   forest_free_cgf(&textures.end_mountain);
   forest_free_cgf(&textures.score_numbers);
   forest_free_cgf(&textures.hugo_lives);
+  forest_free_cgf(&textures.arrows);
   if (textures.scoreboard)
     SDL_FreeSurface(textures.scoreboard);
-  for (int i = 0; i < 4; i++)
-  {
-    if (textures.arrows[i])
-      SDL_FreeSurface(textures.arrows[i]);
-  }
   forest_free_cgf(&textures.cave_hugo_sprite);
   forest_free_cgf(&textures.cave_score_font);
 

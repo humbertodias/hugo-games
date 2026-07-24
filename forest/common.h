@@ -11,7 +11,7 @@ typedef struct {
     Texture* instruction_screen;
     Texture* arrows[4];  // up, up_pressed, down, down_pressed
     Texture* bg_gradient;
-    
+
     // Background layers
     Texture* bg_hillsday;
     Texture* bg_trees;
@@ -20,7 +20,7 @@ typedef struct {
     Texture* leaves1;
     Texture* leaves2;
     Texture* end_mountain;
-    
+
     // Hugo animations
     Texture* hugo_side[8];     // walking (0-7)
     Texture* hugo_jump[3];     // jumping (0-2)
@@ -28,7 +28,7 @@ typedef struct {
     Animation hugo_telllives; // intro animation (0-15)
     Texture* hugo_hand1;    // hand frame 1
     Texture* hugo_hand2;    // hand frame 2
-    
+
     // Sync data for talking animations (loaded from .oos binary files)
     int* sync_start;        // sync for speak_start (005-01)
     int sync_start_count;
@@ -50,7 +50,7 @@ typedef struct {
     int sync_gameover_count;
     int* sync_levelcompleted;    // sync for speak_levelcompleted (005-13)
     int sync_levelcompleted_count;
-    
+
     // Obstacles
     Texture* catapult[8];      // catapult (0-7)
     Texture* trap[6];          // trap (0-5)
@@ -58,12 +58,12 @@ typedef struct {
     Texture* tree[7];          // branch swinging (0-6)
     Texture* lone_tree;        // tree trunk
     Texture* sack[4];          // sacks (0-3)
-    
+
     // HUD elements
     Texture* scoreboard;
     Texture* score_numbers;    // score digits spritesheet
     Texture* hugo_lives;       // life indicator
-    
+
     // Forest hurt animations
     Animation hugohitlog;          // branch hit animation (0-42)
     Animation hugohitlog_talk;     // branch talking (0-17)
@@ -77,7 +77,7 @@ typedef struct {
     Animation hit_rock_sync;       // rock talking (0-17)
     Animation hugo_traphurt;       // trap hurt (0-9)
     Animation hugo_traptalk;       // trap talking (0-15)
-    
+
     // Cave animations
     Animation cave_talks;          // cave intro talking (0-12)
     Animation cave_climbs;         // climbing (0-40)
@@ -113,7 +113,7 @@ typedef struct {
     Audio* speak_hitlog;
     Audio* speak_gameover;
     Audio* speak_levelcompleted;
-    
+
     // Forest sound effects
     Audio* sfx_bg_atmosphere;
     Audio* sfx_lightning_warning;
@@ -132,7 +132,7 @@ typedef struct {
     Audio* sfx_hugo_hangstart;
     Audio* sfx_hugo_hang;
     Audio* sfx_hugo_walk[5];
-    
+
     // Cave speech
     Audio* cave_her_er_vi;
     Audio* cave_trappe_snak;
@@ -142,7 +142,7 @@ typedef struct {
     Audio* cave_hugo_skyd_ud;
     Audio* cave_afskylia_skyd_ud;
     Audio* cave_hugoline_tak;
-    
+
     // Cave sound effects
     Audio* cave_stemning;
     Audio* cave_fodtrin1;
