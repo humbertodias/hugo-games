@@ -1,6 +1,0 @@
-*.o
-main
-data/
-
-# OSX
-.DS_Store
